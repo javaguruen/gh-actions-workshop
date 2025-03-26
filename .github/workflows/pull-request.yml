@@ -70,6 +70,8 @@ jobs:
         run: npm run lint:check
   post-comment:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     needs: [linting, hello_world_job, tests]
 
