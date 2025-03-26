@@ -1,4 +1,4 @@
-name: Hello world ✨
+name: Deploy ✨
 
 # The `on` property configures the events that will trigger the workflow.
 # In our case we want it to run when the `pull_request` event is triggered.
