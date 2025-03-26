@@ -25,5 +25,60 @@ jobs:
 
     # Each job can have multiple steps. These will be run in sequence.
     steps:
-      - name: Print message to terminal
-        run: echo "Hello 🌏!"
+      - name: Checkout repository
+        # To reference external workflows, we use the `uses` keyword.
+        # The thing after the `@` is the version of the workflow, and
+        # references a Git tag.
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        # To reference external workflows, we use the `uses` keyword.
+        # The thing after the `@` is the version of the workflow, and
+        # references a Git tag.
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
+
+  linting:
+    name: Run linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+      # To reference external workflows, we use the `uses` keyword.
+      # The thing after the `@` is the version of the workflow, and
+      # references a Git tag.
+        uses: actions/checkout@v4
+
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint:check
+  post-comment:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    needs: [linting, hello_world_job, tests]
+
+    steps:
+      - name: Post comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            All jobs have finished! 🎉    
